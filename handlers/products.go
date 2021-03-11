@@ -10,18 +10,20 @@ import (
 	"github.com/iasonliu/product-api/data"
 )
 
+// Products is a http.Handler
 type Products struct {
 	l *log.Logger
 }
-type KeyProduct struct{}
 
+// NewProducts creates a products handler with the given logger
 func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
+// getProducts returns the products from the data store
 func (p Products) GetProducts(w http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle GET Products")
-	// fatch the products from the data
+	// fetch the products from the data
 	lp := data.GetProducts()
 	// serialize the list to JSON
 	err := lp.ToJSON(w)
@@ -61,6 +63,8 @@ func (p Products) UpdateProducts(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type KeyProduct struct{}
+
 func (p Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
@@ -71,7 +75,7 @@ func (p Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 			http.Error(w, "Error reading product", http.StatusBadRequest)
 			return
 		}
-		// add context into request
+		// add the product to the context
 		ctx := context.WithValue(r.Context(), KeyProduct{}, product)
 		r = r.WithContext(ctx)
 		// Call the next handler, which can be another middleware in the chain, or the final handler.
