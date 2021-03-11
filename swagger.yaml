@@ -9,7 +9,9 @@ definitions:
         type: string
         x-go-name: Description
       id:
+        description: the id for this Product
         format: int64
+        minimum: 1
         type: integer
         x-go-name: ID
       name:
@@ -22,6 +24,8 @@ definitions:
       sku:
         type: string
         x-go-name: SKU
+    required:
+    - id
     type: object
     x-go-package: github.com/iasonliu/product-api/data
   Products:
@@ -31,9 +35,8 @@ definitions:
     type: array
     x-go-package: github.com/iasonliu/product-api/data
 info:
-  description: |-
-    Package classification of Product API
-    Documentation for Product API v1.0
+  description: Documentation for Product API
+  title: of Product API
   version: 1.0.0
 paths:
   /products:
@@ -45,9 +48,30 @@ paths:
           $ref: '#/responses/productsResponse'
       tags:
       - products
+  /products/{id}:
+    delete:
+      description: Returns a list of products
+      operationId: deleteProduct
+      parameters:
+      - description: |-
+          The id of the product to delete from the database
+          in: Path
+        format: int64
+        in: query
+        name: id
+        required: true
+        type: integer
+        x-go-name: ID
+      responses:
+        "201":
+          $ref: '#/responses/noContent'
+      tags:
+      - products
 produces:
 - application/json
 responses:
+  noContent:
+    description: ""
   productsResponse:
     description: A list of products returns in the response
     schema:
