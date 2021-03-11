@@ -1,18 +1,3 @@
-// Package classification of Product API
-//
-// Documentation for Product API
-//
-//	Schemes: http
-//	BasePath: /
-//	Version: 1.0.0
-//
-//	Consumes:
-//	- application/json
-//
-//	Produces:
-//	- application/json
-//
-// swagger:meta
 package handlers
 
 import (
@@ -25,26 +10,6 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/iasonliu/product-api/data"
 )
-
-// A list of products returns in the response
-// swagger:response productsResponse
-type productsResponse struct {
-	// All products in the system
-	// in: body
-	Body []data.Products
-}
-
-// swagger:response noContent
-type productsNoContent struct {
-}
-
-// swagger:parameters deleteProduct
-type productIDParameterWrapper struct {
-	// The id of the product to delete from the database
-	// in: Path
-	// required: true
-	ID int `json:"id"`
-}
 
 // Products is a http.Handler
 type Products struct {
@@ -77,7 +42,7 @@ func (p Products) GetProducts(w http.ResponseWriter, r *http.Request) {
 // swagger:route DELETE /products/{id} products deleteProduct
 // Returns a list of products
 // responses:
-//	201: noContent
+//	201: noContentResponse
 
 // DeleteProducts deletes a product from the database
 func (p *Products) DeleteProduct(w http.ResponseWriter, r *http.Request) {
@@ -96,14 +61,31 @@ func (p *Products) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// swagger:route POST /products products createProduct
+// Create a new product
+//
+// responses:
+//	201: productResponse
+//  422: errorValidation
+//  501: errorResponse
+
+// Create handles POST requests to add new products
 func (p *Products) AddProduct(w http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST add Product")
 	product := r.Context().Value(KeyProduct{}).(data.Product)
 
-	p.l.Printf("Product: %#v", product)
+	p.l.Printf("[DEBUG] Inserting Product: %#v\n", product)
 	data.AddProduct(&product)
 }
 
+// swagger:route PUT /products products updateProduct
+// Update a products details
+//
+// responses:
+//	201: noContentResponse
+//  404: errorResponse
+//  422: errorValidation
+// Update handles PUT requests to update products
 func (p Products) UpdateProducts(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
