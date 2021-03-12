@@ -14,18 +14,18 @@ definitions:
     description: Product defines the structure for an API product
     properties:
       description:
-        description: the description for this product
+        description: the description for this poduct
         maxLength: 10000
         type: string
         x-go-name: Description
       id:
-        description: the id for this Product
+        description: the id for the product
         format: int64
         minimum: 1
         type: integer
         x-go-name: ID
       name:
-        description: the name for this product
+        description: the name for this poduct
         maxLength: 255
         type: string
         x-go-name: Name
@@ -41,7 +41,6 @@ definitions:
         type: string
         x-go-name: SKU
     required:
-    - id
     - name
     - price
     - sku
@@ -64,7 +63,7 @@ info:
 paths:
   /products:
     get:
-      description: Returns a list of products
+      description: Return a list of products from the database
       operationId: listProducts
       responses:
         "200":
@@ -84,7 +83,7 @@ paths:
         schema:
           $ref: '#/definitions/Product'
       responses:
-        "201":
+        "200":
           $ref: '#/responses/productResponse'
         "422":
           $ref: '#/responses/errorValidation'
@@ -122,21 +121,32 @@ paths:
       - products
   /products/{id}:
     delete:
-      description: Returns a list of products
+      description: Update a products details
       operationId: deleteProduct
       responses:
         "201":
           $ref: '#/responses/noContentResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
+        "501":
+          $ref: '#/responses/errorResponse'
+      tags:
+      - products
+    get:
+      description: Return a list of products from the database
+      operationId: listSingle
+      responses:
+        "200":
+          $ref: '#/responses/productResponse'
+        "404":
+          $ref: '#/responses/errorResponse'
       tags:
       - products
 produces:
 - application/json
 responses:
   errorResponse:
-    description: |-
-      NOTE: Types defined here are purely for documentation purposes
-      these types are not used by any of the handers
-      Generic error message returned as a string
+    description: Generic error message returned as a string
     schema:
       $ref: '#/definitions/GenericError'
   errorValidation:
