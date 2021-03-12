@@ -26,7 +26,7 @@ func main() {
 	getRouter.Use(ph.LoggingMiddleware)
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
-	putRouter.HandleFunc("//products/{id:[0-9]+}", ph.UpdateProducts)
+	putRouter.HandleFunc("/products/{id:[0-9]+}", ph.UpdateProducts)
 	putRouter.Use(ph.MiddlewareProductValidation)
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()

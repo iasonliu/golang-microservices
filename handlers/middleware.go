@@ -11,11 +11,12 @@ import (
 
 type KeyProduct struct{}
 
+// MiddlewareValidateProduct validates the product in the request and calls next if ok
 func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// Do stuff here
-		product := data.Product{}
-		err := product.FromJSON(r.Body)
+		product := &data.Product{}
+		err := data.FromJSON(product, r.Body)
 		if err != nil {
 			p.l.Println("[ERROR] deserializing product", err)
 			http.Error(w, "Error reading product", http.StatusBadRequest)

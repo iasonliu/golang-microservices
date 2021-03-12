@@ -30,7 +30,7 @@ func (p Products) GetProducts(w http.ResponseWriter, r *http.Request) {
 	// fetch the products from the data
 	lp := data.GetProducts()
 	// serialize the list to JSON
-	err := lp.ToJSON(w)
+	err := data.ToJSON(lp, w)
 	if err != nil {
 		http.Error(w, "Unable to marshal json", http.StatusInternalServerError)
 		return
@@ -70,10 +70,10 @@ func (p *Products) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 // Create handles POST requests to add new products
 func (p *Products) AddProduct(w http.ResponseWriter, r *http.Request) {
 	p.l.Println("Handle POST add Product")
-	product := r.Context().Value(KeyProduct{}).(data.Product)
+	product := r.Context().Value(KeyProduct{}).(*data.Product)
 
 	p.l.Printf("[DEBUG] Inserting Product: %#v\n", product)
-	data.AddProduct(&product)
+	data.AddProduct(product)
 }
 
 // swagger:route PUT /products products updateProduct
@@ -92,9 +92,9 @@ func (p Products) UpdateProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	p.l.Println("Handle PUT update Product", id)
-	product := r.Context().Value(KeyProduct{}).(data.Product)
+	product := r.Context().Value(KeyProduct{}).(*data.Product)
 
-	err = data.UpdateProduct(id, &product)
+	err = data.UpdateProduct(id, product)
 	if err == data.ErrProductNotFound {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return
