@@ -1,4 +1,4 @@
-module github.com/iasonliu/golang-microservices
+module github.com/iasonliu/golang-microservices/product-api
 
 go 1.15
 
