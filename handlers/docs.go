@@ -17,19 +17,10 @@ package handlers
 
 import "github.com/iasonliu/product-api/data"
 
-// GenericError is a generic error message returned by a server
-type GenericError struct {
-	Message string `json:"message"`
-}
-
-// ValidationError is a collection of validation error messages
-type ValidationError struct {
-	Messages []string `json:"messages"`
-}
-
 //
 // NOTE: Types defined here are purely for documentation purposes
 // these types are not used by any of the handers
+
 // Generic error message returned as a string
 // swagger:response errorResponse
 type errorResponseWrapper struct {

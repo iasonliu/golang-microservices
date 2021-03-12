@@ -2,42 +2,43 @@ package handlers
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/iasonliu/product-api/data"
 )
 
-type KeyProduct struct{}
-
 // MiddlewareValidateProduct validates the product in the request and calls next if ok
-func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Do stuff here
-		product := &data.Product{}
-		err := data.FromJSON(product, r.Body)
+func (p *Products) MiddlewareValidateProduct(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+		prod := &data.Product{}
+
+		err := data.FromJSON(prod, r.Body)
 		if err != nil {
 			p.l.Println("[ERROR] deserializing product", err)
-			http.Error(w, "Error reading product", http.StatusBadRequest)
+
+			rw.WriteHeader(http.StatusBadRequest)
+			data.ToJSON(&GenericError{Message: err.Error()}, rw)
 			return
 		}
+
 		// validate the product
-		errs := p.v.Validate(product)
-		if errs != nil {
-			p.l.Println("[ERROR] validate product", errs)
-			http.Error(
-				w,
-				fmt.Sprintf("Error reading product: %s", errs),
-				http.StatusBadRequest,
-			)
+		errs := p.v.Validate(prod)
+		if len(errs) != 0 {
+			p.l.Println("[ERROR] validating product", errs)
+
+			// return the validation messages as an array
+			rw.WriteHeader(http.StatusUnprocessableEntity)
+			data.ToJSON(&ValidationError{Messages: errs.Errors()}, rw)
 			return
 		}
+
 		// add the product to the context
-		ctx := context.WithValue(r.Context(), KeyProduct{}, product)
+		ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
 		r = r.WithContext(ctx)
+
 		// Call the next handler, which can be another middleware in the chain, or the final handler.
-		next.ServeHTTP(w, r)
+		next.ServeHTTP(rw, r)
 	})
 }
 

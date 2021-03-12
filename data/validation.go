@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"regexp"
 
-	"github.com/go-playground/validator/v10"
+	"github.com/go-playground/validator"
 )
 
 // ValidationError wraps the validators FieldError so we do not
@@ -31,6 +31,7 @@ func (v ValidationErrors) Errors() []string {
 	for _, err := range v {
 		errs = append(errs, err.Error())
 	}
+
 	return errs
 }
 
@@ -43,6 +44,7 @@ type Validation struct {
 func NewValidation() *Validation {
 	validate := validator.New()
 	validate.RegisterValidation("sku", validateSKU)
+
 	return &Validation{validate}
 }
 
@@ -64,28 +66,32 @@ func NewValidation() *Validation {
 //			fmt.Println()
 //	}
 func (v *Validation) Validate(i interface{}) ValidationErrors {
-	errs := v.validate.Struct(i).(validator.ValidationErrors)
-
-	if len(errs) == 0 {
-		return nil
-	}
-
 	var returnErrs []ValidationError
-	for _, err := range errs {
-		// cast the FieldError into our ValidationError and append to the slice
-		ve := ValidationError{err.(validator.FieldError)}
-		returnErrs = append(returnErrs, ve)
+
+	if errs, ok := v.validate.Struct(i).(validator.ValidationErrors); ok {
+
+		if errs != nil {
+			for _, err := range errs {
+				if fe, ok := err.(validator.FieldError); ok {
+					ve := ValidationError{fe}
+					returnErrs = append(returnErrs, ve)
+				}
+			}
+		}
 	}
 
 	return returnErrs
 }
+
+// validateSKU
 func validateSKU(fl validator.FieldLevel) bool {
-	// sku is of format xxx-xxx-xxx
+	// SKU must be in the format abc-abc-abc
 	re := regexp.MustCompile(`[a-z]+-[a-z]+-[a-z]+`)
-	matches := re.FindAllString(fl.Field().String(), -1)
-	if len(matches) != 1 {
-		return false
+	sku := re.FindAllString(fl.Field().String(), -1)
+
+	if len(sku) == 1 {
+		return true
 	}
 
-	return true
+	return false
 }
