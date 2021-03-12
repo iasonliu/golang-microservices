@@ -23,12 +23,12 @@ func (p *Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 			return
 		}
 		// validate the product
-		err = product.Validate()
-		if err != nil {
-			p.l.Println("[ERROR] validate product", err)
+		errs := p.v.Validate(product)
+		if errs != nil {
+			p.l.Println("[ERROR] validate product", errs)
 			http.Error(
 				w,
-				fmt.Sprintf("Error reading product: %s", err),
+				fmt.Sprintf("Error reading product: %s", errs),
 				http.StatusBadRequest,
 			)
 			return
