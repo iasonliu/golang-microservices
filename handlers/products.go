@@ -1,8 +1,6 @@
 package handlers
 
 import (
-	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -107,4 +105,3 @@ func (p Products) UpdateProducts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
