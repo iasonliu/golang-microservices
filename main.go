@@ -10,8 +10,8 @@ import (
 
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
-	"github.com/iasonliu/product-api/data"
-	"github.com/iasonliu/product-api/handlers"
+	"github.com/iasonliu/golang-microservices/data"
+	"github.com/iasonliu/golang-microservices/handlers"
 )
 
 func main() {

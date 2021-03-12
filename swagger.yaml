@@ -9,7 +9,7 @@ definitions:
         type: string
         x-go-name: Message
     type: object
-    x-go-package: github.com/iasonliu/product-api/handlers
+    x-go-package: github.com/iasonliu/golang-microservices/handlers
   Product:
     description: Product defines the structure for an API product
     properties:
@@ -45,7 +45,7 @@ definitions:
     - price
     - sku
     type: object
-    x-go-package: github.com/iasonliu/product-api/data
+    x-go-package: github.com/iasonliu/golang-microservices/data
   ValidationError:
     description: ValidationError is a collection of validation error messages
     properties:
@@ -55,7 +55,7 @@ definitions:
         type: array
         x-go-name: Messages
     type: object
-    x-go-package: github.com/iasonliu/product-api/handlers
+    x-go-package: github.com/iasonliu/golang-microservices/handlers
 info:
   description: Documentation for Product API
   title: of Product API

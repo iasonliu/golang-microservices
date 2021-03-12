@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/iasonliu/product-api/data"
+	"github.com/iasonliu/golang-microservices/data"
 )
 
 // MiddlewareValidateProduct validates the product in the request and calls next if ok
