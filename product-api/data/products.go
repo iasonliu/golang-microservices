@@ -115,13 +115,13 @@ var productList = []*Product{
 		Name:        "Latte",
 		Description: "Frothy milky coffee",
 		Price:       2.45,
-		SKU:         "abc323",
+		SKU:         "abc-ddd-ccc",
 	},
 	&Product{
 		ID:          2,
 		Name:        "Esspresso",
 		Description: "Short and strong coffee without milk",
 		Price:       1.99,
-		SKU:         "fjd34",
+		SKU:         "fjd-ff-ss",
 	},
 }
