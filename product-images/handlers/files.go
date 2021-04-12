@@ -1,12 +1,11 @@
 package handlers
 
 import (
-	"io"
 	"net/http"
 	"path/filepath"
 
 	"github.com/gorilla/mux"
-	hclog "github.com/hashicorp/go-hclog"
+	"github.com/hashicorp/go-hclog"
 	"github.com/iasonliu/golang-microservices/product-images/files"
 )
 
@@ -32,12 +31,7 @@ func (f *Files) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	// no need to check for invalid id or filename as the mux router will not send requests
 	// here unless they have the correct parameters
 
-	if id == "" || fn == "" {
-		f.invalidURI(r.URL.String(), rw)
-		return
-	}
-
-	f.saveFile(id, fn, rw, r.Body)
+	f.saveFile(id, fn, rw, r)
 }
 
 func (f *Files) invalidURI(uri string, rw http.ResponseWriter) {
@@ -46,11 +40,11 @@ func (f *Files) invalidURI(uri string, rw http.ResponseWriter) {
 }
 
 // saveFile saves the contents of the request to a file
-func (f *Files) saveFile(id, path string, rw http.ResponseWriter, r io.ReadCloser) {
+func (f *Files) saveFile(id, path string, rw http.ResponseWriter, r *http.Request) {
 	f.log.Info("Save file for product", "id", id, "path", path)
 
 	fp := filepath.Join(id, path)
-	err := f.store.Save(fp, r)
+	err := f.store.Save(fp, r.Body)
 	if err != nil {
 		f.log.Error("Unable to save file", "error", err)
 		http.Error(rw, "Unable to save file", http.StatusInternalServerError)
