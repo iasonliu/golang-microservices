@@ -17,14 +17,14 @@ func setupLocal(t *testing.T) (*Local, string, func()) {
 		t.Fatal(err)
 	}
 
-	l, err := NewLocal(dir, 1000000000)
+	l, err := NewLocal(dir, 1024*1000*5)
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	return l, dir, func() {
 		// cleanup function
-		// os.RemoveAll(dir)
+		//os.RemoveAll(dir)
 	}
 }
 
@@ -42,7 +42,6 @@ func TestSavesContentsOfReader(t *testing.T) {
 	assert.NoError(t, err)
 
 	// check the contents of the file
-
 	d, err := ioutil.ReadAll(f)
 	assert.NoError(t, err)
 	assert.Equal(t, fileContents, string(d))
@@ -50,12 +49,11 @@ func TestSavesContentsOfReader(t *testing.T) {
 
 func TestGetsContentsAndWritesToWriter(t *testing.T) {
 	savePath := "/1/test.png"
-	fileContents := "hello World"
+	fileContents := "Hello World"
 	l, _, cleanup := setupLocal(t)
-	defer
+	defer cleanup()
 
 	// Save a file
-
 	err := l.Save(savePath, bytes.NewBuffer([]byte(fileContents)))
 	assert.NoError(t, err)
 
