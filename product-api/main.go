@@ -11,9 +11,12 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+	"github.com/iasonliu/env"
 	"github.com/iasonliu/golang-microservices/product-api/data"
 	"github.com/iasonliu/golang-microservices/product-api/handlers"
 )
+
+var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
 
 func main() {
 	logger := log.New(os.Stdout, "[product-api] ", log.LstdFlags)
@@ -54,7 +57,7 @@ func main() {
 
 	// config http server
 	httpServer := &http.Server{
-		Addr:         ":9090",
+		Addr:         *bindAddress,
 		Handler:      ch(sm),
 		IdleTimeout:  120 * time.Second,
 		ReadTimeout:  5 * time.Second,
