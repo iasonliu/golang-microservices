@@ -13,7 +13,9 @@ require (
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/iasonliu/env v0.6.1
+	github.com/iasonliu/golang-microservices/currency v0.0.0-20210415085513-7d63224a6426
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/stretchr/testify v1.7.0
+	google.golang.org/grpc v1.37.0
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )

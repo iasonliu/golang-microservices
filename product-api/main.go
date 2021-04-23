@@ -12,18 +12,33 @@ import (
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/iasonliu/env"
+	protos "github.com/iasonliu/golang-microservices/currency/protos/currency"
 	"github.com/iasonliu/golang-microservices/product-api/data"
 	"github.com/iasonliu/golang-microservices/product-api/handlers"
+	"google.golang.org/grpc"
 )
 
 var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
+var currencyServiceAddress = env.String("CURRENCY_SERVICE_ADDRESS", false, "localhost:9092", "currency service address")
 
 func main() {
+	env.Parse()
+
 	logger := log.New(os.Stdout, "[product-api] ", log.LstdFlags)
 	v := data.NewValidation()
 
-	// create the handers
-	ph := handlers.NewProducts(logger, v)
+	conn, err := grpc.Dial("localhost:9092", grpc.WithInsecure())
+	if err != nil {
+		panic(err)
+	}
+
+	defer conn.Close()
+
+	// create client
+	cc := protos.NewCurrencyClient(conn)
+
+	// create the handlers
+	ph := handlers.NewProducts(l, v, cc)
 
 	// create a new server mux and register hanndlers
 
